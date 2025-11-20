@@ -11,6 +11,7 @@
 
   let buffer = '';
   let output = '';
+  let mode = 'kana'; // kana / raw
 
   const wabun = {
     'ーー・ーー': 'あ', '・ー': 'い', '・・ー': 'う', 'ー・ーー': 'え', '・ー・・': 'お',
@@ -61,8 +62,32 @@
 
   function commitLetter() {
     if (buffer === '') return;
-    const kana = wabun[buffer] || buffer;
-    output += kana;
+
+    if (mode === 'kana') {
+      // ひらがなへ変換（区切り無しの連続モードも許可）
+      let tmp = buffer;
+      let result = '';
+      while (tmp.length > 0) {
+        let matched = false;
+        for (const [morse, kana] of Object.entries(wabun)) {
+          if (tmp.startsWith(morse)) {
+            result += kana;
+            tmp = tmp.slice(morse.length);
+            matched = true;
+            break;
+          }
+        }
+        if (!matched) {
+          result += '?';
+          break;
+        }
+      }
+      output += result;
+    } else {
+      // 生モールス連結モード
+      output += buffer;
+    }
+
     buffer = '';
     updateUI();
   }
@@ -73,11 +98,8 @@
   }
 
   function backspace() {
-    if (buffer.length > 0) {
-      buffer = buffer.slice(0, -1);
-    } else if (output.length > 0) {
-      output = output.slice(0, -1);
-    }
+    if (buffer.length > 0) buffer = buffer.slice(0, -1);
+    else if (output.length > 0) output = output.slice(0, -1);
     updateUI();
   }
 

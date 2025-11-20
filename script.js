@@ -11,7 +11,7 @@
 
   let buffer = '';
   let output = '';
-  let mode = 'raw'; // kana / raw
+  let mode = 'kana'; // kana / raw
 
   const wabun = {
     'ーー・ーー': 'あ', '・ー': 'い', '・・ー': 'う', 'ー・ーー': 'え', '・ー・・': 'お',

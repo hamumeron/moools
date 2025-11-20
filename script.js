@@ -12,6 +12,19 @@
   let buffer = '';
   let output = '';
 
+  const wabun = {
+    'ーー・ーー': 'あ', '・ー': 'い', '・・ー': 'う', 'ー・ーー': 'え', '・ー・・': 'お',
+    '・ー・・・': 'か', 'ー・ー・・': 'き', '・・・ー': 'く', 'ー・ーー・': 'け', 'ーーー・': 'こ',
+    '・ーー・': 'さ', 'ーー・ー・': 'し', 'ーーー・ー': 'す', 'ー・ー・ー': 'せ', 'ー・・ー': 'そ',
+    'ー・': 'た', '・・ー・': 'ち', '・・・': 'つ', '・ー・ー・': 'て', '・・ーー': 'と',
+    '・・': 'な', '・ー・': 'に', '・・・・': 'ぬ', 'ーー・ー': 'ね', 'ーー': 'の',
+    'ー・・・': 'は', 'ーー・・': 'ひ', 'ー・・': 'ふ', '・': 'へ', '・・・ー・': 'ほ',
+    'ー・ー': 'ま', '・・ー・・': 'み', 'ー・・ー': 'む', 'ー': 'め', 'ー・・ー・': 'も',
+    '・ーー': 'や', 'ーー・': 'ゆ', 'ー・ーー': 'よ',
+    'ー・ーーー': 'ら', '・ー・ーー': 'り', 'ーーー': 'る', 'ー・ー・ーー': 'れ', '・ー・・ー': 'ろ',
+    '・ーーー': 'わ', '・ーーー・': 'を', '・ー・ー': 'ん'
+  };
+
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   function beep(durationMs) {
     const o = audioCtx.createOscillator();
@@ -48,14 +61,14 @@
 
   function commitLetter() {
     if (buffer === '') return;
-    if (output) output += ' ';
-    output += buffer;
+    const kana = wabun[buffer] || buffer;
+    output += kana;
     buffer = '';
     updateUI();
   }
 
   function insertWordSpace() {
-    if (output && !output.endsWith(' /')) output += ' /';
+    output += ' ';
     updateUI();
   }
 
@@ -63,9 +76,7 @@
     if (buffer.length > 0) {
       buffer = buffer.slice(0, -1);
     } else if (output.length > 0) {
-      const parts = output.trimEnd().split(' ');
-      parts.pop();
-      output = parts.join(' ');
+      output = output.slice(0, -1);
     }
     updateUI();
   }
